@@ -51,13 +51,23 @@ export async function analyzeComplaint(formData: FormData) {
   });
 }
 
+export async function geocodeAddressAction(query: string) {
+  const { searchAddress } = await import("@/services/geocoding/geocodingService");
+  return searchAddress(query);
+}
+
+export async function reverseGeocodeAction(lat: number, lng: number) {
+  const { reverseGeocodeCoordinates } = await import("@/services/geocoding/geocodingService");
+  return reverseGeocodeCoordinates(lat, lng);
+}
+
 const SubmitSchema = z.object({
   description: z.string().min(10).max(1000),
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
   category: z.enum(Object.keys(CATEGORY_LABELS) as [string, ...string[]]),
   severity: z.enum(["low", "medium", "high"]),
-  address: z.string().max(200).optional(),
+  address: z.string().max(1000).optional(),
   subcategory: z.string().max(60).optional(),
   aiCategory: z.string().max(40).optional(),
   aiSummary: z.string().max(200).optional(),
